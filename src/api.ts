@@ -7,6 +7,7 @@
  */
 
 import axios from "axios";
+import moment from "moment";
 
 /**
  * API endpoint
@@ -266,4 +267,116 @@ export function loadList<Item>(path: string, query: Query<Item> = {}) {
  */
 export function downloadList<Item>(path: string, fileName: string, query: Query<Item> = {}) {
 	return download(path, fileName, query);
+}
+
+/**
+ * Parametry Standardního API pro entitu.
+ */
+export interface EntityApiOptions<EntityRead> {
+
+	/**
+	 * kořenové URL path pro entitu
+	 */
+	path: string;
+
+	/**
+	 * Seznam vlastností přenášející datum nebo datum a čas, které jsou na přenosové úrovni 
+	 * typu string a je potřeba je postrpocesingem změnit na Date.
+	 */
+	convertDateTimes?: Array<keyof EntityRead>;
+}
+
+/**
+ * Parsuje datum získané ze serveru.
+ */
+function parseServerDateTime(isoDateTime: string | null): Date | null {
+	return isoDateTime ? moment(isoDateTime, moment.ISO_8601).toDate() : null;
+}
+
+interface EntityBase {
+	id: number;
+}
+
+/**
+ * Standardní API pro entitu
+ */
+export class EntityApi<EntityRead extends EntityBase, EntityEdit extends EntityBase> {
+
+	constructor(private options: EntityApiOptions<EntityRead>) { }
+
+	/**
+	 * Načte konkrétní entitu.
+	 */
+	load = async (id: number): Promise<EntityRead> => {
+		const entity = await get<EntityRead>(this.options.path + "/" + id);
+
+		// Konvertujeme data z iso formátu do nativního typu Date.
+		if (this.options.convertDateTimes) {
+			for (let prop in entity) {
+				if (this.options.convertDateTimes.find(i => i == prop)) {
+					(entity as any)[prop] = parseServerDateTime(entity[prop] as any);
+				}
+			}
+		}
+		return entity;
+	}
+
+	/**
+	 * Vytvoří novou entitu.
+	 */
+	create = async (entity: EntityEdit) => {
+		return await put(this.options.path + "/create", entity);
+	}
+
+	/**
+	 * Aktualizuje entitu.
+	 */
+	update = async (entity: EntityEdit) => {
+		return await put(this.options.path + "/" + entity.id + "/update", entity);
+	}
+
+	/**
+	 * Odstraní entitu (resp. přesune ji do odstraněných)
+	 */
+	remove = async (id: number) => {
+		return await del(this.options.path + "/" + id);
+	}
+
+	/**
+	 * Provede smazání jednoho nebo více záznamů.
+	 */
+	bulkDelete = async (ids: number[]) => {
+		return await post<number[]>(this.options.path + "/bulk/delete", ids);
+	}
+
+	/**
+	 * Obnoví záznam.
+	 */
+	restore = async (id: number) => {
+		return await post(this.options.path + "/" + id + "/restore", {});
+	}
+
+	/**
+	 * Obnoví jeden nebo více záznamů.
+	 */
+	bulkRestore = async (ids: number[]) => {
+		return await post<number[]>(this.options.path + "/bulk/restore", ids);
+	}
+
+	/**
+	 * Načte seznam entit filtrovaný dotazem.
+	 */
+	loadList = async (query: Query<EntityRead>) => {
+		const list = await loadList(this.options.path, query);
+		if (this.options.convertDateTimes) {
+			for (let item of list.data) {
+				for (let prop in item) {
+					if (this.options.convertDateTimes.find(i => i == prop)) {
+						(item as any)[prop] = parseServerDateTime(item[prop] as any);
+					}
+				}
+			}
+		}
+		return list;
+	}
 }
