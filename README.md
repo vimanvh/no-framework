@@ -6,11 +6,12 @@ Vzorové klíčové komponenty a postupy v TypeScriptu pro tvorbu robustních we
 Motivace
 --------
 
-- Dlouhodobá udržitelnost díky nezastárávání
+- Dlouhodobá udržitelnost projketů
+- Eliminace rychlého zastarávání
 - Důraz na důsledné typování, typová statická vazba má vždy přednost před dynamickou a nekontrolovanou vazbou
 - Maximální jednoduchost a nekomplikovanost, avšak s maximálním využitím TS
-- Minimum závislostí na cizích technologiích, a když už tak izolovaně
-- Vazba na React jako prezentační vrstvu
+- Málo závislostí na cizích technologiích, a když už tak izolovaně
+- Připraveno pro React jako lehkou prezentační vrstvu
 
 Přehled
 -------

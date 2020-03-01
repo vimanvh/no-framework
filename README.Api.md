@@ -11,15 +11,15 @@ Typologie API požadavků
 -----------------------
 
 - seznamy se stránkováním, filtrováním a řazením
-- CRUD operace na entitama
+- CRUD operace
 - download souboru
 - ostatní operace
 
 Dotazy pro seznamy
 ------------------
 
-Standarní API pro entitu (CRUD)
--------------------------------
+Standarní API pro entitu (CRUD + další)
+---------------------------------------
 
 Download souboru
 ----------------
