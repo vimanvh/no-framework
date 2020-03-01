@@ -179,7 +179,7 @@ function serverRequest<Request, Response>(
  * @param path 			Path požadavku
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  */
-export function get<Request, Response>(path: string, requestData: Request | null = null): Promise<Response> {
+export function get<Request = {}, Response = {}>(path: string, requestData: Request | null = null): Promise<Response> {
 	return serverRequest(path, "GET", requestData);
 }
 
@@ -220,7 +220,7 @@ export function del<Request = {}, Response = OperationResponse>(path: string, re
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  * @param fileName		Název downloadovaného souboru
  */
-export function download<Request>(path: string, requestData: Request | null = null, fileName: string, httpType: "GET" | "POST" = "GET"): Promise<{}> {
+export function download<Request = {}>(path: string, requestData: Request | null = null, fileName: string, httpType: "GET" | "POST" = "GET"): Promise<{}> {
 	return serverRequest<Request, {}>(path, httpType, requestData, fileName);
 }
 
