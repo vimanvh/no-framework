@@ -4,6 +4,7 @@
  * 		- obecné HTTP operace typovaně
  * 		- podpora typovaných dotazů pro načítání seznamů
  * 		- standardní výsledek API operace
+ * 		- standardní API pro entitu (sada operací opakující se pro každou entitu)
  */
 
 import axios from "axios";
