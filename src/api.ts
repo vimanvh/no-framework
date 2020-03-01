@@ -290,7 +290,7 @@ export interface EntityApiOptions<EntityRead> {
 /**
  * Parsuje datum získané ze serveru.
  */
-function parseServerDateTime(isoDateTime: string | null): Date | null {
+export function parseServerDateTime(isoDateTime: string | null): Date | null {
 	return isoDateTime ? moment(isoDateTime, moment.ISO_8601).toDate() : null;
 }
 

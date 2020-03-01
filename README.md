@@ -6,16 +6,16 @@ Vzorové klíčové komponenty a postupy v TypeScriptu pro tvorbu robustních we
 Motivace
 --------
 
-- dlouhodobá udržitelnost díky nezastárávání
-- důraz na důsledné typování, typová statická vazba má vždy přednost před dynamickou a nekontrolovanou vazbou
-- maximální jednoduchost a nekomplikovanost, avšak s maximálním využitím TS
-- minimum závislostí na cizích technologiích, a když už tak izolovaně
-- vazba na React jako prezentační vrstvu
+- Dlouhodobá udržitelnost díky nezastárávání
+- Důraz na důsledné typování, typová statická vazba má vždy přednost před dynamickou a nekontrolovanou vazbou
+- Maximální jednoduchost a nekomplikovanost, avšak s maximálním využitím TS
+- Minimum závislostí na cizích technologiích, a když už tak izolovaně
+- Vazba na React jako prezentační vrstvu
 
 Přehled
 -------
 
-- API
+- [API](./README.Api.md)
 - Stavový kontejner
 - Seznamy
 - Formuláře
