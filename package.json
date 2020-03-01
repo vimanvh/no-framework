@@ -1,0 +1,11 @@
+{
+  "name": "no-framework",
+  "version": "1.0.0",
+  "description": "TypeScript contracts and implementations for building robust web applications",
+  "author": "Vit Herman",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.19.2"
+  }
+}
