@@ -81,13 +81,11 @@ interface QueryParameter<TItem, TField extends keyof TItem> {
 interface Query<TItem> {
 	searchprase?: string;
 	deleted?: boolean;
-	fields?: Array<keyof TItem>;
 	filter?: QueryParameter<TItem, keyof TItem>[];
 	page?: number;
 	pageSize?: number;
 	sortFields?: Array<keyof TItem>;
 	sortFieldsDesc?: Array<keyof TItem>;
-	disableCount?: boolean;
 }
 
 /**
