@@ -19,3 +19,5 @@ Přehled
 - Stavový kontejner
 - Seznamy
 - Formuláře
+- Akce nad entitou
+- Vzorový projekt
