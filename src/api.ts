@@ -99,13 +99,13 @@ type QueryFilterOperator<T> =
  * Příklad:
  * 
  * 		interface User {
- * 				name: string;
- * 				age: number;
+ * 			name: string;
+ * 			age: number;
  * 		}
  * 		
  * 		api.loadList<User>("/path", { filter:[
- * 				api.qp("name", "=", "Jan"),
- * 				api.qp("age", "<=", 18),
+ * 			api.qp("name", "=", "Jan"),
+ * 			api.qp("age", "<=", 18),
  * 		]})
  */
 export function qp<TItem, TField extends keyof TItem>(
@@ -117,7 +117,8 @@ export function qp<TItem, TField extends keyof TItem>(
 }
 
 /**
- * Univerzální HTTP požadavek
+ * Univerzální HTTP požadavek. Zde implementován pomocí axiosu. Implementaci lze
+ * jakkoli nahradit nebo rozšiřovat podle specifik konkrétního projektu.
  * 
  * @param path 					URL path požadavku		
  * @param method				HTTP metoda 
@@ -162,6 +163,9 @@ function serverRequest<Request, Response>(
 				}
 				return;
 			}
+
+			// Následující větev je závislá na běhu v browseru. Lze odstranit nebo nahradit
+			// pro běh na serveru
 
 			if (downloadFileName) {
 				if (window.navigator.msSaveOrOpenBlob) {
