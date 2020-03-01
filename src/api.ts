@@ -128,8 +128,8 @@ export function qp<TItem, TField extends keyof TItem>(
 function serverRequest<Request, Response>(
 	path: string,
 	method: HttpMethod,
-	requestData: Request | null = null,
-	downloadFileName: string | null = null): Promise<Response> {
+	requestData: Request | undefined = undefined,
+	downloadFileName: string | undefined = undefined): Promise<Response> {
 
 	let requestIsFormData = requestData && (requestData as any).constructor !== undefined && (requestData as any).constructor.name == "FormData";
 	let sendAsJSON = (method == "POST" || method == "PUT") && !requestIsFormData;
@@ -156,10 +156,7 @@ function serverRequest<Request, Response>(
 				if (response.data != null) {
 					reject(response.data);
 				} else {
-					const message = response.status == 0
-						? "Spojení se serverem bylo ztraceno."
-						: "Při komunikaci se serverem nastala chyba č. " + response.status + ".";
-					reject(message);
+					reject("Při komunikaci se serverem nastala chyba č. " + response.status + ".");
 				}
 				return;
 			}
@@ -181,13 +178,13 @@ function serverRequest<Request, Response>(
 					elementA.click();
 					window.URL.revokeObjectURL(url);
 				}
-				resolve({} as Response);
+				resolve();
 				return;
 			}
 			resolve(response.data as Response);
 
 		}).catch((error) => {
-			reject("Nastala chyba komunikace se serverem.");
+			reject("Nastala chyba komunikaci se serverem.");
 		});
 	});
 }
@@ -198,7 +195,9 @@ function serverRequest<Request, Response>(
  * @param path 			URL path požadavku
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  */
-export function get<Request = {}, Response = {}>(path: string, requestData: Request | null = null): Promise<Response> {
+export function get<Response>(path: string): Promise<Response>;
+export function get<Request, Response>(path: string, requestData: Request): Promise<Response>;
+export function get<Request, Response>(path: string, requestData?: Request): Promise<Response> {
 	return serverRequest(path, "GET", requestData);
 }
 
@@ -208,7 +207,7 @@ export function get<Request = {}, Response = {}>(path: string, requestData: Requ
  * @param path 			URL path požadavku
  * @param requestData  	Vstupní data (zasílaná jako JSON)
  */
-export function post<Request = {}, Response = OperationResponse>(path: string, requestData: Request): Promise<Response> {
+export function post<Request, Response = OperationResponse>(path: string, requestData: Request): Promise<Response> {
 	return serverRequest<Request, Response>(path, "POST", requestData);
 }
 
@@ -228,7 +227,9 @@ export function put<Request, Response = OperationResponse>(path: string, request
  * @param path 			URL path požadavku
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  */
-export function del<Request = {}, Response = OperationResponse>(path: string, requestData: Request | null = null): Promise<Response> {
+export function del<Response = OperationResponse>(path: string): Promise<Response>;
+export function del<Request, Response = OperationResponse>(path: string, requestData: Request): Promise<Response>;
+export function del<Request, Response = OperationResponse>(path: string, requestData?: Request): Promise<Response> {
 	return serverRequest<Request, Response>(path, "DELETE", requestData);
 }
 
@@ -236,11 +237,14 @@ export function del<Request = {}, Response = OperationResponse>(path: string, re
  * Provede download v samostatném okně prohlížeče metodou POST pod názvem fileName
  * 
  * @param path 			URL path požadavku
- * @param requestData 	Vstupní data (zasílaná jako QueryString)
  * @param fileName		Název downloadovaného souboru
+ *
+ * @param requestData 	Vstupní data (zasílaná jako QueryString)
  */
-export function download<Request = {}>(path: string, requestData: Request | null = null, fileName: string, httpType: "GET" | "POST" = "GET"): Promise<{}> {
-	return serverRequest<Request, {}>(path, httpType, requestData, fileName);
+export function download(path: string, fileName: string): Promise<void>;
+export function download<Request>(path: string, fileName: string, requestData: Request): Promise<void>;
+export function download<Request>(path: string, fileName: string, requestData?: Request): Promise<void> {
+	return serverRequest<Request, void>(path, "POST", requestData, fileName);
 }
 
 /**
@@ -261,5 +265,5 @@ export function loadList<Item>(path: string, query: Query<Item> = {}) {
  * @param fileName	Název souboru po staženíQuery<Item>
  */
 export function downloadList<Item>(path: string, fileName: string, query: Query<Item> = {}) {
-	return download<Query<Item>>(path, query, fileName);
+	return download(path, fileName, query);
 }
