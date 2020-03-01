@@ -1,5 +1,9 @@
 /*
- * HTTP komunikace. Obálky požadavků, odpovědí a dotazů
+ * HTTP komunikace typovaně
+ *
+ * 		- obecné HTTP operace typovaně
+ * 		- podpora typovaných dotazů pro načítání seznamů
+ * 		- standardní výsledek API operace
  */
 
 import axios from "axios";
@@ -10,78 +14,40 @@ import axios from "axios";
 const endPoint = "http://localhost/api"
 
 /**
- * Podporované HTTP metody.
+ * Podporované HTTP metody
  */
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 /**
- * Odpověď serveru na požadavek získání seznamu
+ * Standardní odpověď na operaci. Operace je požadavek, jehož smyslem je v systému něco
+ * provést. Ať už CUD nebo specifické zákaznické operace.
+ */
+interface OperationResponse {
+	//TODO: Dodefinujte vlastní strukturu, kterou vaše API vrací
+}
+
+/**
+ * Standardní odpověď serveru obalující seznam
  */
 interface ListResponse<Item> {
 	/**
-	 * Pole entit
+	 * Pole položek
 	 */
 	data: Item[];
 
 	/**
-	 * Celkový počet záznamů
+	 * Celkový počet záznamů bez ohledu na stránkování
 	 */
 	count: number;
 }
 
 /**
- * Odpověď serveru na operace kromě získání seznamu
- */
-interface OperationResponse {
-	messages: string[];
-}
-
-/**
- * Operátory pro dotazy nad typem "string".
- */
-type QueryOperatorString = "=" | "<>"
-
-/**
- * Operátory pro dotazy nad typem "number".
- */
-type QueryOperatorNumber = "<" | "<=" | ">" | "=>" | "=" | "<>";
-
-/**
- * Operátory pro dotazy nad typem "boolean".
- */
-type QueryOperatorBoolean = "is" | "is not";
-
-/**
- * Operátory pro dotazy nad typem "Date".
- */
-type QueryOperatorDate = QueryOperatorNumber;
-
-/**
- * Přiřazení query operátorů datovým typům
- */
-type QueryOperator<T> =
-	T extends string ? QueryOperatorString :
-	T extends number ? QueryOperatorNumber :
-	T extends boolean ? QueryOperatorBoolean :
-	T extends Date ? QueryOperatorDate :
-	undefined;
-
-/**
- * Definice parametru v dotazu
- */
-interface QueryParameter<TItem, TField extends keyof TItem> {
-	field: keyof TItem;
-	operator: QueryOperator<TItem[TField]>;
-	value: TItem[TField] | null;
-}
-
-/**
- * Model dotazu pro získání seznamu entit.
+ * Model dotazu pro získání filtrovaného a stránkovaného seznamu.
  */
 interface Query<TItem> {
 	searchprase?: string;
 	deleted?: boolean;
-	filter?: QueryParameter<TItem, keyof TItem>[];
+	filter?: QueryFilterItem<TItem, keyof TItem>[];
 	page?: number;
 	pageSize?: number;
 	sortFields?: Array<keyof TItem>;
@@ -89,12 +55,63 @@ interface Query<TItem> {
 }
 
 /**
- * Vytvoří query parametr pro dotaz nad seznamem.
+ * Definice položky filtru v modelu dotazu
+ */
+interface QueryFilterItem<TItem, TField extends keyof TItem> {
+	field: keyof TItem;
+	operator: QueryFilterOperator<TItem[TField]>;
+	value: TItem[TField] | null;
+}
+
+/**
+ * Operátory pro dotazy na hodnotu typu "string".
+ */
+type QueryFilterOperatorString = "=" | "<>"
+
+/**
+ * Operátory pro dotazy na hodnotu typu "number".
+ */
+type QueryFilterOperatorNumber = "<" | "<=" | ">" | "=>" | "=" | "<>";
+
+/**
+ * Operátory pro dotazy na hodnotu typu "boolean".
+ */
+type QueryFilterOperatorBoolean = "is" | "is not";
+
+/**
+ * Operátory pro dotazy na hodnotu typu "Date".
+ */
+type QueryFilterOperatorDate = QueryFilterOperatorNumber;
+
+/**
+ * Přiřazení query operátorů datovým typům
+ */
+type QueryFilterOperator<T> =
+	T extends string ? QueryFilterOperatorString :
+	T extends number ? QueryFilterOperatorNumber :
+	T extends boolean ? QueryFilterOperatorBoolean :
+	T extends Date ? QueryFilterOperatorDate :
+	undefined;
+
+/**
+ * Helper pro vytvoření položky query filtru.
+ * 
+ * Příklad:
+ * 
+ * 		interface User {
+ * 				name: string;
+ * 				age: number;
+ * 		}
+ * 		
+ * 		api.loadList<User>("/path", { filter:[
+ * 				api.qp("name", "=", "Jan"),
+ * 				api.qp("age", "<=", 18),
+ * 		]})
  */
 export function qp<TItem, TField extends keyof TItem>(
 	field: TField,
-	operator: QueryOperator<TItem[TField]>,
-	value: TItem[TField] | null): QueryParameter<TItem, TField> {
+	operator: QueryFilterOperator<TItem[TField]>,
+	value: TItem[TField] | null): QueryFilterItem<TItem, TField> {
 
 	return { field, operator, value };
 }
@@ -102,7 +119,7 @@ export function qp<TItem, TField extends keyof TItem>(
 /**
  * Univerzální HTTP požadavek
  * 
- * @param path 					Path požadavku		
+ * @param path 					URL path požadavku		
  * @param method				HTTP metoda 
  * @param requestData 			Vstupní data požadavku	
  * @param downloadFileName		Název stahovaného souboru 
@@ -174,7 +191,7 @@ function serverRequest<Request, Response>(
 /**
  * Provede požadavek metodou GET
  * 
- * @param path 			Path požadavku
+ * @param path 			URL path požadavku
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  */
 export function get<Request = {}, Response = {}>(path: string, requestData: Request | null = null): Promise<Response> {
@@ -184,7 +201,7 @@ export function get<Request = {}, Response = {}>(path: string, requestData: Requ
 /**
  * Provede požadavek metodou POST
  * 
- * @param path 			Path požadavku
+ * @param path 			URL path požadavku
  * @param requestData  	Vstupní data (zasílaná jako JSON)
  */
 export function post<Request = {}, Response = OperationResponse>(path: string, requestData: Request): Promise<Response> {
@@ -194,7 +211,7 @@ export function post<Request = {}, Response = OperationResponse>(path: string, r
 /**
  * Provede požadavek metodou PUT
  * 
- * @param path 			Path požadavku
+ * @param path 			URL path požadavku
  * @param requestData  	Vstupní data (zasílaná jako JSON)
  */
 export function put<Request, Response = OperationResponse>(path: string, requestData: Request): Promise<Response> {
@@ -204,7 +221,7 @@ export function put<Request, Response = OperationResponse>(path: string, request
 /**
  * Provede požadavek metodou DELETE
  * 
- * @param path 			Path požadavku
+ * @param path 			URL path požadavku
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  */
 export function del<Request = {}, Response = OperationResponse>(path: string, requestData: Request | null = null): Promise<Response> {
@@ -214,7 +231,7 @@ export function del<Request = {}, Response = OperationResponse>(path: string, re
 /**
  * Provede download v samostatném okně prohlížeče metodou POST pod názvem fileName
  * 
- * @param path 			Path požadavku
+ * @param path 			URL path požadavku
  * @param requestData 	Vstupní data (zasílaná jako QueryString)
  * @param fileName		Název downloadovaného souboru
  */
@@ -225,7 +242,7 @@ export function download<Request = {}>(path: string, requestData: Request | null
 /**
  * Načte filtrovaný seznam
  * 
- * @param path 		Path požadavku
+ * @param path 		URL path požadavku
  * @param query		Dotaz na záznamy (filtr)
  */
 export function loadList<Item>(path: string, query: Query<Item> = {}) {
@@ -235,7 +252,7 @@ export function loadList<Item>(path: string, query: Query<Item> = {}) {
 /**
  * Stáhne filtrovaný seznam
  * 
- * @param path 		Path požadavku
+ * @param path 		URL path požadavku
  * @param query		Dotaz na záznamy (filtr)
  * @param fileName	Název souboru po staženíQuery<Item>
  */
