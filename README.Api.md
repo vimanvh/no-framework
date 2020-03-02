@@ -21,14 +21,14 @@ api.get<QueryStringType, Response>("/urlpath", { id: 3 });
 
 ### POST
 
-Pošle metodou POST data typu `Request`, vrací `Promise<OperationResponse>`
+Pošle metodou POST `data` typu `Request`, vrací `Promise<OperationResponse>`
 ```ts
-api.post<Request>("/urlpath", {...})
+api.post<Request>("/urlpath", data)
 ```
 
-Pošle metodou POST data typu `Request`, vrací `Promise<Response>`
+Pošle metodou POST `data` typu `Request`, vrací `Promise<Response>`
 ```ts
-api.post<User, Response>("/user/create", {...})
+api.post<User, Response>("/user/create", data)
 ```
 
 
