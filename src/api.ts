@@ -133,10 +133,12 @@ function serverRequest<Request, Response>(
 	requestData: Request | undefined = undefined,
 	downloadFileName: string | undefined = undefined): Promise<Response> {
 
-	let requestIsFormData = requestData && (requestData as any).constructor !== undefined && (requestData as any).constructor.name == "FormData";
-	let sendAsJSON = (method == "POST" || method == "PUT") && !requestIsFormData;
+	let requestIsFormData = requestData
+		&& (requestData as any).constructor !== undefined
+		&& (requestData as any).constructor.name == "FormData";
+
 	let contentType: string = "application/x-www-form-urlencoded; charset=UTF-8";
-	if (sendAsJSON) {
+	if ((method == "POST" || method == "PUT") && !requestIsFormData) {
 		contentType = "application/json";
 	}
 
@@ -145,15 +147,18 @@ function serverRequest<Request, Response>(
 		headers["Content-Type"] = contentType;
 	}
 
-	return new Promise(function (resolve, reject) {
+	return new Promise(async function (resolve, reject) {
+		try {
+			const response = await axios.request({
+				method: method,
+				url: endPoint + path,
+				params: method === "GET" || method === "DELETE" ? requestData : undefined,
+				data: method !== "GET" && method !== "DELETE" ? requestData : undefined,
+				responseType: downloadFileName ? "blob" : "text",
+				headers,
+				transformResponse: [convertDates]
+			});
 
-		axios.request({
-			method: method,
-			url: endPoint + path,
-			data: requestData,
-			responseType: downloadFileName ? "blob" : "text",
-			headers
-		}).then((response) => {
 			if (response.status < 200 || response.status > 299) {
 				if (response.data != null) {
 					reject(response.data);
@@ -183,13 +188,29 @@ function serverRequest<Request, Response>(
 				resolve();
 				return;
 			}
-			resolve(response.data as Response);
 
-		}).catch((error) => {
+			resolve(response.data as Response);
+		} catch (error) {
 			reject("Nastala chyba komunikaci se serverem.");
-		});
+		}
 	});
 }
+
+function convertDates(data: any) {
+	const dataParsed = JSON.parse(data, convertDateStringToDate);
+	return dataParsed;
+}
+
+function convertDateStringToDate(key: string, value: any) {
+	const reCandidate = /\d{4}.*/;
+	const reISO = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)/;
+	if (typeof value === 'string') {
+		if (reCandidate.test(value) && reISO.test(value)) {
+			return new Date(value);
+		}
+	}
+	return value;
+};
 
 /**
  * Provede požadavek metodou GET
