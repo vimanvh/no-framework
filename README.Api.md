@@ -31,6 +31,18 @@ Pošle metodou POST `data` typu `Request`, vrací `Promise<Response>`
 api.post<User, Response>("/user/create", data)
 ```
 
+### PUT
+
+Pošle metodou PUT `data` typu `Request`, vrací `Promise<OperationResponse>`
+```ts
+api.put<Request>("/urlpath", data)
+```
+
+Pošle metodou PUT `data` typu `Request`, vrací `Promise<Response>`
+```ts
+api.put<User, Response>("/user/create", data)
+```
+
 
 Typologie API požadavků
 -----------------------
