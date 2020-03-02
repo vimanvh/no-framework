@@ -9,26 +9,26 @@ Základní HTTP operace
 
 ### GET
 
-Vrací object typu Response
+Vrací `Promise<Response>`
 ```ts
-await api.get<Response>("/urlpath");
+api.get<Response>("/urlpath");
 ```
 
-Vrací object typu Response, volá se s query stringem typu QueryStringType
+Vrací `Promise<Response>`, volá se s query stringem typu `QueryStringType`
 ```ts
-await api.get<QueryStringType, Response>("/urlpath", { id: 3 });
+api.get<QueryStringType, Response>("/urlpath", { id: 3 });
 ```
 
 ### POST
 
-Pošle metodou POST data typu Request, vrací objekt typu OperationResponse
+Pošle metodou POST data typu `Request`, vrací `Promise<OperationResponse>`
 ```ts
-await api.post<Request>("/urlpath", {...})
+api.post<Request>("/urlpath", {...})
 ```
 
-Pošle metodou POST data typu Request, vrací objetk typu Response
+Pošle metodou POST data typu `Request`, vrací `Promise<Response>`
 ```ts
-await api.post<User, Response>("/user/create", {...})
+api.post<User, Response>("/user/create", {...})
 ```
 
 
