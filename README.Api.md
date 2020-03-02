@@ -28,7 +28,7 @@ api.post<Request>("/urlpath", data)
 
 Pošle metodou POST `data` typu `Request`, vrací `Promise<Response>`
 ```ts
-api.post<Request, Response>("/user/create", data)
+api.post<Request, Response>("/urlpath", data)
 ```
 
 ### PUT
@@ -40,7 +40,7 @@ api.put<Request>("/urlpath", data)
 
 Pošle metodou PUT `data` typu `Request`, vrací `Promise<Response>`
 ```ts
-api.put<Request, Response>("/user/create", data)
+api.put<Request, Response>("/urlpath", data)
 ```
 
 
