@@ -13,14 +13,14 @@ K dispozici jsou  základní funkce `get()`, `post()`, `put()` a `del()` s gener
 
 *Příklad:*
 ```ts
-const result = await get<Request,Response>("/users", { "name": "John" })
+const result = await get<Request,Response>("/user", { "id": 34 })
 
 // result je typovaný jako Response
 ```
 
-Funkce `get()` a `del()` převádí vstupní argumenty automaticky na query string, `post()` a `put()` je posílá jako body v JSON formátu. Pokud je vstupním argumentem standardní objekt typu `FormData`, jsou zaslány ve formátu `application/x-www-form-urlencoded`.
+Funkce `get()` a `del()` převádí vstupní argumenty automaticky na QUERY STRING, `post()` a `put()` je posílá jako body v JSON formátu. Pokud je však vstupním argumentem standardní objekt typu `FormData`, jsou zaslány ve formátu `application/x-www-form-urlencoded`.
 
-Funkce vracejí objekt výstupních dat daného výstupního generického typu. Metody `post()`, `put()` a `del()` definují implicitní generický typ `OperationResponse` pro výstupní objekt. Ukazuje se jako praktické používat takto jednotný typ napříč API. To umožňuje univerzálně a na jednom místě ošetřit
+Funkce vracejí objekt typu `Response`. Metody `post()`, `put()` a `del()` definují implicitní generický typ `OperationResponse` pro výstupní objekt. Ukazuje se jako praktické používat takto jednotný typ napříč API. To umožňuje univerzálně a na jednom místě ošetřit
 celou škálu speciálních situací, které operace mohou vracet. Zákaznický kód tak může od těchto specifik
 zůstat poměrně dobře odstíněn.
 
