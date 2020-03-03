@@ -7,41 +7,13 @@ Modul pro volání HTTP API [api.ts](/src/api.ts)
 Základní HTTP operace
 ---------------------
 
-### GET
+K dispozici jsou  základní funkce `get()`, `post()`, `put()` a `del()` s generickými typy pro vstup i výstup. Argumentem je urlpath (např. `/users`) a objekt reprezentující vstupní argumenty. 
 
-Vrací `Promise<Response>`
-```ts
-api.get<Response>("/urlpath");
-```
+Funkce `get()` a `del()` převádí vstupní argumenty automaticky na query string, `post()` a `put()` je posílá jako body v JSON formátu. Pokud je vstupním argumentem standardní objekt typu `FormData`, jsou zaslány ve formátu `application/x-www-form-urlencoded`.
 
-Vrací `Promise<Response>`, volá se s query stringem typu `QueryStringType`
-```ts
-api.get<QueryStringType, Response>("/urlpath", { id: 3 });
-```
-
-### POST
-
-Pošle metodou POST `data` typu `Request`, vrací `Promise<OperationResponse>`
-```ts
-api.post<Request>("/urlpath", data)
-```
-
-Pošle metodou POST `data` typu `Request`, vrací `Promise<Response>`
-```ts
-api.post<Request, Response>("/urlpath", data)
-```
-
-### PUT
-
-Pošle metodou PUT `data` typu `Request`, vrací `Promise<OperationResponse>`
-```ts
-api.put<Request>("/urlpath", data)
-```
-
-Pošle metodou PUT `data` typu `Request`, vrací `Promise<Response>`
-```ts
-api.put<Request, Response>("/urlpath", data)
-```
+Funkce vracejí objekt výstupních dat daného výstupního generického typu. Metody `post()`, `put()` a `del()` definují implicitní generický typ `OperationResponse` pro výstupní objekt. Ukazuje se jako praktické používat takto jednotný typ napříč API. To umožňuje univerzálně a na jednom místě ošetřit
+celou škálu speciálních situací, které operace mohou vracet. Zákaznický kód tak může od těchto specifik
+zůstat poměrně dobře odstíněn.
 
 
 Typologie API požadavků
