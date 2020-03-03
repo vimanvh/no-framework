@@ -329,76 +329,56 @@ export class EntityApi<EntityRead extends EntityBase, EntityEdit extends EntityB
 	/**
 	 * Načte konkrétní entitu.
 	 */
-	load = async (id: number): Promise<EntityRead> => {
-		const entity = await get<EntityRead>(this.options.path + "/" + id);
-
-		// Konvertujeme data z iso formátu do nativního typu Date.
-		if (this.options.convertDateTimes) {
-			for (let prop in entity) {
-				if (this.options.convertDateTimes.find(i => i == prop)) {
-					(entity as any)[prop] = parseServerDateTime(entity[prop] as any);
-				}
-			}
-		}
-		return entity;
+	load = (id: number): Promise<EntityRead> => {
+		return get<EntityRead>(this.options.path + "/" + id);
 	}
 
 	/**
 	 * Vytvoří novou entitu.
 	 */
-	create = async (entity: EntityEdit) => {
-		return await put(this.options.path + "/create", entity);
+	create = (entity: EntityEdit) => {
+		return put(this.options.path + "/create", entity);
 	}
 
 	/**
 	 * Aktualizuje entitu.
 	 */
-	update = async (entity: EntityEdit) => {
-		return await put(this.options.path + "/" + entity.id + "/update", entity);
+	update = (entity: EntityEdit) => {
+		return put(this.options.path + "/" + entity.id + "/update", entity);
 	}
 
 	/**
 	 * Odstraní entitu (resp. přesune ji do odstraněných)
 	 */
-	remove = async (id: number) => {
-		return await del(this.options.path + "/" + id);
+	remove = (id: number) => {
+		return del(this.options.path + "/" + id);
 	}
 
 	/**
 	 * Provede smazání jednoho nebo více záznamů.
 	 */
-	bulkDelete = async (ids: number[]) => {
-		return await post<number[]>(this.options.path + "/bulk/delete", ids);
+	bulkDelete = (ids: number[]) => {
+		return post<number[]>(this.options.path + "/bulk/delete", ids);
 	}
 
 	/**
 	 * Obnoví záznam.
 	 */
-	restore = async (id: number) => {
-		return await post(this.options.path + "/" + id + "/restore", {});
+	restore = (id: number) => {
+		return post(this.options.path + "/" + id + "/restore", {});
 	}
 
 	/**
 	 * Obnoví jeden nebo více záznamů.
 	 */
-	bulkRestore = async (ids: number[]) => {
-		return await post<number[]>(this.options.path + "/bulk/restore", ids);
+	bulkRestore = (ids: number[]) => {
+		return post<number[]>(this.options.path + "/bulk/restore", ids);
 	}
 
 	/**
 	 * Načte seznam entit filtrovaný dotazem.
 	 */
-	loadList = async (query: Query<EntityRead>) => {
-		const list = await loadList(this.options.path, query);
-		if (this.options.convertDateTimes) {
-			for (let item of list.data) {
-				for (let prop in item) {
-					if (this.options.convertDateTimes.find(i => i == prop)) {
-						(item as any)[prop] = parseServerDateTime(item[prop] as any);
-					}
-				}
-			}
-		}
-		return list;
+	loadList = (query: Query<EntityRead>) => {
+		return loadList(this.options.path, query);
 	}
 }
