@@ -13,9 +13,9 @@ K dispozici jsou  základní funkce `get()`, `post()`, `put()` a `del()` s gener
 
 *Příklad:*
 ```ts
-const result = await get<Request,Response>("/user", { "id": 34 })
+const result = await get<Request,User>("/user", { "id": 34 })
 
-// result je typovaný jako Response
+// result je typovaný jako User
 ```
 
 Funkce `get()` a `del()` převádí vstupní argumenty automaticky na QUERY STRING, `post()` a `put()` je posílá jako body v JSON formátu. Pokud je však vstupním argumentem standardní objekt typu `FormData`, jsou zaslány ve formátu `application/x-www-form-urlencoded`.
