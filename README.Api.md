@@ -94,7 +94,7 @@ import { EntityApi } from "./api"
 const usersApi = new EntityApi<User, UserEdit>({ path: "/users" });
 ```
 
-Nyní můžeme provádět tyto operace:
+Nyní lze bez dalších dodatečných definic rovnou provádět tyto operace:
 
 **Načtení entity**
 ```ts
@@ -124,19 +124,17 @@ await usersApi.remove(id);
 
 **Hromadné odstranění entit**
 ```ts
-await usersApi.bulkRemove([id1, id2, id3,...]);
+await usersApi.bulkRemove([1,2,3]);
 ```
 
 **Obnova smazané entity**
 ```ts
-await 
-
-usersApi.restore(id);
+await usersApi.restore(id);
 ```
 
 **Hromadná obnova entit**
 ```ts
-await usersApi.bulkRestore([id1, id2, id3,...]);
+await usersApi.bulkRestore([1,2,3]);
 ```
 
 Download
