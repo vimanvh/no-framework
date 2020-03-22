@@ -35,12 +35,65 @@ Typologie API požadavků
 
 Dotazy pro seznamy
 ------------------
+Pro práci se seznamy požadujeme načtení seznamu položek, který je stránkován, filtrován a seřazen. K tomu slouží funkce `loadList()`,
+které jako vstupní argument předáváme `query`, a která vrací obálku `ListResponse`. Ta obsahuje kromě požadovaného seznamu obsahující
+pouze jednu stránku také informaci o celkovém počtu záznamu odpovědi na dotaz.
+
+*Příklad stránkování a řazení:*
+```ts
+import { loadList, qp } from "./api"
+
+const result = await loadList<User>("/users", {
+	paging: {
+		page: 1,
+		pageSize: 30
+	},
+	sorting: [
+		["lastName", "desc"],
+		"firstName",
+	]
+});
+
+result:
+{
+	data: [...],
+	count: 66788
+}
+```
+
+*Příklad pro nastavení filtru*
+```ts
+import { loadList, qp } from "./api"
+
+const result = await loadList<User>("/users", {
+	filter: {
+		searchPhrase: "Novák",
+		query: [
+			qp("age", ">", 18),
+			qp("gender", "=", "muz")
+		]
+	}
+})
+
+result:
+{
+	data: [...],
+	count: 23
+}
+```
+
 
 Standarní API pro entitu (CRUD + další)
 ---------------------------------------
 
+Pro entity, tedy jednoznačně identifikované položky můžeme definovat standardní API:
+
+```ts
+import { EntityApi } from "./api"
+
+const usersApi = new EntityApi<User, UserEdit>({ path: "/users" });
+```
+
+
 Download souboru
 ----------------
-
-Konverze dat po přenosu z ISO formátu
--------------------------------------

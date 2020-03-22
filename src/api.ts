@@ -8,7 +8,6 @@
  */
 
 import axios from "axios";
-import moment from "moment";
 
 /**
  * API endpoint
@@ -47,13 +46,15 @@ interface ListResponse<Item> {
  * Model dotazu pro získání filtrovaného a stránkovaného seznamu.
  */
 interface Query<TItem> {
-	searchprase?: string;
-	deleted?: boolean;
-	filter?: QueryFilterItem<TItem, keyof TItem>[];
-	page?: number;
-	pageSize?: number;
-	sortFields?: Array<keyof TItem>;
-	sortFieldsDesc?: Array<keyof TItem>;
+	filter?: {
+		searchPhrase?: string;
+		query?: QueryFilterItem<TItem, keyof TItem>[],
+	},
+	paging?: {
+		page: number;
+		pageSize: number;
+	}
+	sorting?: Array<[keyof TItem, "asc" | "desc"] | keyof TItem>;
 }
 
 /**
@@ -285,7 +286,7 @@ export function loadList<Item>(path: string, query: Query<Item> = {}) {
  * 
  * @param path 		URL path požadavku
  * @param query		Dotaz na záznamy (filtr)
- * @param fileName	Název souboru po staženíQuery<Item>
+ * @param fileName	Název souboru po stažení
  */
 export function downloadList<Item>(path: string, fileName: string, query: Query<Item> = {}) {
 	return download(path, fileName, query);
@@ -300,19 +301,6 @@ export interface EntityApiOptions<EntityRead> {
 	 * kořenové URL path pro entitu
 	 */
 	path: string;
-
-	/**
-	 * Seznam vlastností přenášející datum nebo datum a čas, které jsou na přenosové úrovni 
-	 * typu string a je potřeba je postrpocesingem změnit na Date.
-	 */
-	convertDateTimes?: Array<keyof EntityRead>;
-}
-
-/**
- * Parsuje datum získané ze serveru.
- */
-export function parseServerDateTime(isoDateTime: string | null): Date | null {
-	return isoDateTime ? moment(isoDateTime, moment.ISO_8601).toDate() : null;
 }
 
 interface EntityBase {
