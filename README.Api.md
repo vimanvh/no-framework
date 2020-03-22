@@ -140,6 +140,8 @@ await usersApi.bulkRestore([1,2,3]);
 Download
 --------
 
+Download se na pozadí provádí pomocí http metody `POST`, což umožňuje flexibilnější parametrizaci.
+
 **Stažení souboru**
 
 Stažení souboru provedeme pomocí funkce `download()`:
