@@ -1,4 +1,4 @@
-import { loadList, qp, EntityApi } from "../src/api"
+import { loadList, qp, EntityApi, download, downloadList } from "../src/api"
 
 interface User {
 	id: number;
@@ -37,4 +37,13 @@ async function example2() {
 
 async function example3() {
 	const usersApi = new EntityApi<User, UserEdit>({ path: "/users" });
+}
+
+async function example4() {
+	await download("/obchodni-podminky", "obchodni-podminky.pdf");
+}
+
+async function example5() {
+	const query = {};
+	await downloadList("/export", "exportovana_data.xls", query);
 }

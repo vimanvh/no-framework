@@ -24,6 +24,11 @@ type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
  * provést. Ať už CUD nebo specifické zákaznické operace.
  */
 interface OperationResponse {
+	/**
+	 * Id entity, nad kterou byla provedena operace
+	 */
+	entityId?: number;
+
 	//TODO: Dodefinujte vlastní strukturu, kterou vaše API vrací
 }
 
@@ -345,7 +350,7 @@ export class EntityApi<EntityRead extends EntityBase, EntityEdit extends EntityB
 	/**
 	 * Provede smazání jednoho nebo více záznamů.
 	 */
-	bulkDelete = (ids: number[]) => {
+	bulkRemove = (ids: number[]) => {
 		return post<number[]>(this.options.path + "/bulk/delete", ids);
 	}
 

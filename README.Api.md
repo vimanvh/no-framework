@@ -94,6 +94,67 @@ import { EntityApi } from "./api"
 const usersApi = new EntityApi<User, UserEdit>({ path: "/users" });
 ```
 
+Nyní můžeme provádět tyto operace:
 
-Download souboru
-----------------
+**Načtení entity**
+```ts
+const user = await usersApi.load(id);
+```
+
+**Načtení filtrovaného, stránkovaného a řazeného seznamu entit**
+```ts
+const user = await usersApi.loadList(query);
+```
+
+**Vytvoření entity**
+```ts
+await usersApi.create(user);
+// id vytvořené entity lze získat z výsledku
+```
+
+**Aktualizace entity**
+```ts
+await usersApi.update(user);
+```
+
+**Odstranění entity**
+```ts
+await usersApi.remove(id);
+```
+
+**Hromadné odstranění entit**
+```ts
+await usersApi.bulkRemove([id1, id2, id3,...]);
+```
+
+**Obnova smazané entity**
+```ts
+await 
+
+usersApi.restore(id);
+```
+
+**Hromadná obnova entit**
+```ts
+await usersApi.bulkRestore([id1, id2, id3,...]);
+```
+
+Download
+--------
+
+**Stažení souboru**
+
+Stažení souboru provedeme pomocí funkce `download()`:
+
+```ts
+await download("/obchodni-podminky", "obchodni-podminky.pdf");
+```
+
+**Stažení seznamu**
+
+Stažení seznamu provedeme pomocí funkce `downloadList()`. Na stránkování se standardně nebere zřetel
+a stahují se všechna data vyhovující filtru:
+
+```ts
+await downloadList("/export", "exportovana_data.xls", query);
+```
