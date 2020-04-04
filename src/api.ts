@@ -12,7 +12,7 @@ import axios from "axios";
 /**
  * API endpoint
  */
-const endPoint = "http://localhost/api"
+const endPoint = "http://localhost/api";
 
 /**
  * Podporované HTTP metody
@@ -54,11 +54,11 @@ interface Query<TItem> {
 	filter?: {
 		searchPhrase?: string;
 		query?: QueryFilterItem<TItem, keyof TItem>[],
-	},
+	};
 	paging?: {
 		page: number;
 		pageSize: number;
-	}
+	};
 	sorting?: Array<[keyof TItem, "asc" | "desc"] | keyof TItem>;
 }
 
@@ -74,7 +74,7 @@ interface QueryFilterItem<TItem, TField extends keyof TItem> {
 /**
  * Operátory pro dotazy na hodnotu typu "string".
  */
-type QueryFilterOperatorString = "=" | "<>"
+type QueryFilterOperatorString = "=" | "<>";
 
 /**
  * Operátory pro dotazy na hodnotu typu "number".
@@ -148,7 +148,7 @@ function serverRequest<Request, Response>(
 		contentType = "application/json";
 	}
 
-	const headers: any = {}
+	const headers: any = {};
 	if (!requestIsFormData) {
 		headers["Content-Type"] = contentType;
 	}
@@ -210,13 +210,13 @@ function convertDates(data: any) {
 function convertDateStringToDate(key: string, value: any) {
 	const reCandidate = /\d{4}.*/;
 	const reISO = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)/;
-	if (typeof value === 'string') {
+	if (typeof value === "string") {
 		if (reCandidate.test(value) && reISO.test(value)) {
 			return new Date(value);
 		}
 	}
 	return value;
-};
+}
 
 /**
  * Provede požadavek metodou GET
