@@ -85,7 +85,7 @@ export class StateContainer<State> {
 }
 
 /**
- * Vrací HOC, která zapouzdřuje React komponentu a jejíž stav je propojen s jedním stavovým kontejnerem
+ * Vrací HOC, která zapouzdřuje React komponentu a jejíž stav je propojen s jedním stavovým kontejnerem.
  */
 function bindContainer<State, ComponentProps>(
 	component: React.ComponentType<ComponentProps>,
@@ -108,7 +108,7 @@ function bindContainer<State, ComponentProps>(
 }
 
 /**
- * Vrací HOC, která zapouzdřuje React komponentu a jejíž stav je propojen s vícero stavovými kontejnery
+ * Vrací HOC, která zapouzdřuje React komponentu a jejíž stav je propojen s vícero stavovými kontejnery.
  */
 export function bindContainers<ComponentProps>(
 	component: React.ComponentType<ComponentProps>,
