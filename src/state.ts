@@ -1,6 +1,7 @@
 /**
  * State management pro reaktivní UI.
  */
+import React from 'react';
 
 /**
  * Předpis metody pro transformaci původního stavu na nový parciální.
@@ -11,7 +12,7 @@ export interface TransformMethod<State> {
 
 /**
  * State container uchovává stavové informace, změny stavu jsou immutabilní,
- * umožňuje napojení se na stav React komponenty.
+ * umožňuje napojení na React komponentu.
  */
 export class StateContainer<State> {
 
@@ -81,4 +82,41 @@ export class StateContainer<State> {
 			}
 		});
 	}
+}
+
+/**
+ * Vrací HOC, která zapouzdřuje React komponentu a jejíž stav je propojen s jedním stavovým kontejnerem
+ */
+function bindContainer<State, ComponentProps>(
+	component: React.ComponentType<ComponentProps>,
+	container: StateContainer<State>
+) {
+	return class StateContainerHolder extends React.Component<ComponentProps> {
+		constructor(props: any) {
+			super(props);
+			container.bind(this);
+		}
+
+		componentWillUnmount = () => {
+			container.unbind(this);
+		}
+
+		render = () => {
+			return React.createElement(component);
+		}
+	}
+}
+
+/**
+ * Vrací HOC, která zapouzdřuje React komponentu a jejíž stav je propojen s vícero stavovými kontejnery
+ */
+export function bindContainers<ComponentProps>(
+	component: React.ComponentType<ComponentProps>,
+	...containers: StateContainer<any>[]
+) {
+	let wrappedComponent = component;
+	for (let container of containers) {
+		wrappedComponent = bindContainer(wrappedComponent, container);
+	}
+	return wrappedComponent;
 }
