@@ -9,7 +9,7 @@
     "@types/moment": "^2.13.0",
     "@types/react": "^16.9.25",
     "axios": "^0.19.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "react": "^16.13.1"
   }
 }
