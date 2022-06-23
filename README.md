@@ -1,11 +1,8 @@
 No Framework
 ============
 
-Some TypeScript librarires made for simplification of building React applications.
+[API](./api.ts)\
+Module for calling REST API methods in our technology stack.
 
-- [API](./README.Api.md)
-- [State management container](./README.State.md)
-- List pages
-- Forms
-- Actions on the entity
-- Template project
+[State management container](./state.ts)\
+Module for creating state management containers that are decoupled from React components. These containers allow to separate module logic from JSX templates.
