@@ -1,7 +1,7 @@
 No Framework
 ============
 
-Some TypeScript librarires made for simplification of bulding React applications.
+Some TypeScript librarires made for simplification of building React applications.
 
 Přehled
 -------
